@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f5f7fb">
+  <title>Vox Studio</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Vox Studio home">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M6 15h28v19H6z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="M6 15 9 6h28l-3 9z" fill="currentColor"/><path d="m13 6 5 9M24 6l5 9" stroke="#6658e8" stroke-width="3"/></svg></span>
+        <span>Vox<span class="brand-light"> Studio</span></span>
+      </a>
+      <div class="topbar-right">
+        <span class="local-badge"><i></i> Traitement local dans votre navigateur</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="intro">
+        <div>
+          <p class="eyebrow">ESPACE VIDÉO</p>
+          <h1>Donnez plus de puissance <span>à votre audio.</span></h1>
+          <p class="intro-copy">Prévisualisez votre vidéo, amplifiez le son et exportez une copie améliorée.</p>
+        </div>
+        <div class="step-indicator" aria-label="Trois étapes">
+          <span class="step active">01 <b>Importer</b></span>
+          <span class="step-line"></span>
+          <span class="step">02 <b>Améliorer</b></span>
+          <span class="step-line"></span>
+          <span class="step">03 <b>Exporter</b></span>
+        </div>
+      </section>
+
+      <section class="workspace">
+        <div class="main-column">
+          <section class="panel preview-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">01 / APERÇU</p>
+                <h2>Votre vidéo</h2>
+              </div>
+              <span class="file-status" id="fileStatus">Aucune vidéo chargée</span>
+            </div>
+
+            <label class="dropzone" id="dropzone" for="videoInput">
+              <input id="videoInput" type="file" accept="video/*">
+              <span class="upload-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M4 16.5v2A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5v-2"/></svg>
+              </span>
+              <strong>Déposez une vidéo ici ou <em>parcourez vos fichiers</em></strong>
+              <small>Une vidéo à la fois · MP4, WebM, MOV et autres formats pris en charge</small>
+            </label>
+
+            <div class="load-progress hidden" id="loadProgress">
+              <div class="progress-meta"><span id="loadMessage">Preparing video…</span><span id="loadPercent">0%</span></div>
+              <div class="progress-track"><span id="loadBar"></span></div>
+            </div>
+
+            <div class="video-wrap hidden" id="videoWrap">
+              <video id="video" controls playsinline preload="metadata"></video>
+              <div class="video-meta">
+                <span id="videoName">video.mp4</span>
+                <span id="videoDetails">—</span>
+              </div>
+            </div>
+            <div class="waveform-section">
+              <div class="wave-head">
+                <div><span class="wave-dot"></span><span>Forme d’onde audio</span></div>
+                <span id="waveLabel">En attente d’une vidéo</span>
+              </div>
+              <canvas id="waveform" height="104" aria-label="Forme d’onde audio visualization"></canvas>
+            </div>
+            <p class="notice hidden" id="errorMessage" role="alert"></p>
+          </section>
+
+          <section class="panel volume-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">02 / AMÉLIORATION</p>
+                <h2>Contrôle du volume</h2>
+              </div>
+              <span class="live-pill"><i></i> Aperçu en direct</span>
+            </div>
+            <div class="volume-readout">
+              <div><span class="readout-label">Volume de sortie</span><p><strong id="gainValue">1.0×</strong><span class="gain-percent" id="gainPercent">100%</span></p></div>
+              <span class="gain-description" id="gainDescription">Volume d’origine</span>
+            </div>
+            <input id="volumeSlider" type="range" min="1" max="100" step="0.2" value="1" disabled>
+            <div class="range-labels"><span>1× Original</span><span>50× Amplifié</span><span>100× Maximum</span></div>
+            <div class="preset-row" aria-label="Volume presets">
+              <button class="preset active" data-gain="1" disabled>Original</button>
+              <button class="preset" data-gain="5" disabled>5×</button>
+              <button class="preset" data-gain="10" disabled>10×</button>
+              <button class="preset" data-gain="25" disabled>25×</button>
+              <button class="preset" data-gain="100" disabled>100×</button>
+            </div>
+            <div class="tip-box"><span class="tip-icon">i</span><p>Une amplification élevée peut provoquer de la distorsion si le son d’origine est déjà fort. Ajustez le niveau pendant l’écoute.</p></div>
+          </section>
+
+          <section class="panel audio-tools-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">03 / TRAITEMENT AUDIO</p>
+                <h2>Nettoyage et isolation</h2>
+              </div>
+              <span class="live-pill"><i></i> Réglages en direct</span>
+            </div>
+            <div class="audio-tool-row">
+              <div class="audio-tool-copy">
+                <strong>Réduction des bruits</strong>
+                <p>Atténue les bruits faibles entre les paroles et les sons utiles.</p>
+              </div>
+              <label class="switch" aria-label="Activer la réduction des bruits">
+                <input type="checkbox" id="noiseReduction" disabled>
+                <span class="switch-track"></span>
+              </label>
+            </div>
+            <div class="noise-sensitivity" id="noiseSensitivityWrap">
+              <label for="noiseSensitivity">Sensibilité de la réduction <strong id="noiseSensitivityValue">Moyenne</strong></label>
+              <input id="noiseSensitivity" type="range" min="1" max="5" value="3" disabled>
+              <div class="range-labels"><span>Légère</span><span>Forte</span></div>
+            </div>
+            <div class="audio-tool-divider"></div>
+            <div class="audio-tool-row">
+              <div class="audio-tool-copy">
+                <strong>Isolation de la voix</strong>
+                <p>Met en avant les fréquences vocales et atténue une partie des sons graves et aigus.</p>
+              </div>
+              <label class="switch" aria-label="Activer l’isolation de la voix">
+                <input type="checkbox" id="voiceIsolation" disabled>
+                <span class="switch-track"></span>
+              </label>
+            </div>
+            <p class="audio-disclaimer">Ces traitements utilisent des filtres audio locaux. Ils réduisent certains bruits, mais ne remplacent pas une séparation vocale par intelligence artificielle.</p>
+          </section>
+        </div>
+
+        <aside class="side-column">
+          <section class="panel export-panel">
+            <p class="eyebrow">03 / EXPORTATION</p>
+            <h2>Enregistrer votre vidéo</h2>
+            <p class="panel-copy">Exportez une nouvelle vidéo avec le niveau audio choisi. Le fichier original reste inchangé.</p>
+            <label class="field-label" for="outputFormat">Format d’exportation</label>
+            <div class="filename-field"><select id="outputFormat" aria-label="Format d’exportation"></select></div>
+            <label class="field-label" for="outputName">Nom du fichier</label>
+            <div class="filename-field"><input id="outputName" type="text" value="enhanced-video" maxlength="100"><span id="extensionLabel">.webm</span></div>
+            <div class="export-summary">
+              <div><span>Niveau sonore</span><strong id="summaryGain">1.0×</strong></div>
+              <div><span>Format de sortie</span><strong id="summaryFormat">WebM</strong></div>
+              <div><span>Méthode d’exportation</span><strong>Capture en temps réel</strong></div>
+            </div>
+            <button class="primary-button" id="exportButton" disabled>
+              <svg viewBox="0 0 24 24"><path d="M12 3v12m0 0 4.5-4.5M12 15l-4.5-4.5M4 17v3h16v-3"/></svg>
+              Exporter la vidéo améliorée
+            </button>
+            <p class="export-hint" id="exportHint">Importez une vidéo pour activer l’exportation.</p>
+            <div class="export-progress hidden" id="exportProgress">
+              <div class="progress-meta"><span id="exportMessage">Preparing export…</span><span id="exportPercent">0%</span></div>
+              <div class="progress-track"><span id="exportBar"></span></div>
+              <button class="text-button" id="cancelExport">Annuler l’exportation</button>
+            </div>
+            <div class="success-box hidden" id="successBox" role="status">
+              <span class="success-check">✓</span><div><strong>Exportation terminée</strong><p id="successMessage">Votre vidéo améliorée est prête.</p></div>
+            </div>
+          </section>
+          <section class="panel info-panel">
+            <div class="info-icon">✳</div>
+            <div><h3>Confidentialité intégrée</h3><p>Votre vidéo est traitée sur cet appareil. Elle n’est envoyée vers aucun serveur et n’est stockée dans aucun compte.</p></div>
+          </section>
+          <section class="panel specs-panel">
+            <h3>Détails de la session</h3>
+            <div><span>Fichier source</span><strong id="sourceSize">—</strong></div>
+            <div><span>Durée</span><strong id="sourceDuration">—</strong></div>
+            <div><span>Résolution</span><strong id="sourceResolution">—</strong></div>
+          </section>
+        </aside>
+      </section>
+      <footer><span>Vox Studio</span><span>Traitement local dans le navigateur · Aucun compte requis</span></footer>
+    </main>
+  </div>
+</body>
+</html>
